@@ -22,6 +22,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 --]]
 
 -- HOG Map and Scenarios (version 1.0) files parser
+-- See http://movingai.com/benchmarks/formats.html
 
 local tonumber, assert, io = tonumber, assert, io
 local mapFilesPath = 'benchmarks/maps/%s'
@@ -69,7 +70,7 @@ end
     O void (out of map bounds)
     T tree (unpassable)
     S swamp (passable from terrain)
-    W water (passable from terrain)
+    W water (traversable, but not passable from terrain)
     
   Implementation note
     We will only consider '[.G]' as passable
