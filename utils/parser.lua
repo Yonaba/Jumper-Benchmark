@@ -85,20 +85,24 @@ local function parseMap(mapFile)
   local _,map_offset = map_data:find('map[\n\r]')
   map_data = map_data:sub(map_offset+1)
   local map = {}
+  local row_count = 0
   repeat
     local EOS = map_data:find('[\n\r]')
     if EOS then
       local line = map_data:sub(1,EOS-1)
       map_data = map_data:sub(EOS+1)
-      map[#map+1] = {}
+      map[row_count] = {}
       local row = map[#map]
+	    local col_count = 0
         for char in line:gmatch('.') do
-          row[#row+1] = char:match('[.G]') and 0 or 1
+          row[col_count] = char:match('[.G]') and 0 or 1
+		  col_count = col_count+1
         end
     end
+	row_count = row_count+1
   until not EOS
-  assert(#map == map_height,'Error parsing map height')
-  assert(#map[1] == map_width,'Error parsing map width')
+  assert(#map+1 == map_height,'Error parsing map height')
+  assert(#map[1]+1 == map_width,'Error parsing map width')
   return map
 end
 
@@ -116,6 +120,7 @@ end
       ending x-coordinate (int)
       ending y-coordinate (int)
       optimal length (float)
+
 --]]
 
 -- Parses a scenario file
