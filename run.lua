@@ -102,12 +102,13 @@ local function processMapList(mapList)
                         tostring(string.format('%.2f',Exp[k].optimal_cost))))
 
     end
+    
     print('\n')
 		current_bucket = 0
     
 		print(('='):rep(126))
 		print(('  Number of experiments    : %04d'):format(#Exp))
-		print(('  Success/Fails            : %04d/%04d'):format(success,fail))
+		print(('  Success/Fails            : %04d/%04d'):format(success,fail or 0))
 		print(('  Total computational time : %.2f seconds'):format(map_time_count/1000))
 		print(('='):rep(126))
     
