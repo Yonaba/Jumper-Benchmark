@@ -62,7 +62,7 @@ end
       height (int)
       width (int)
       map
-      
+
   (ASCII) String data , '[\n\r]' line-endings, containing the following characters)
     . terrain (passable)
     G terrain (passable)
@@ -71,10 +71,10 @@ end
     T tree (unpassable)
     S swamp (passable from terrain)
     W water (traversable, but not passable from terrain)
-    
+
   Implementation note
     We will only consider '[.G]' as passable
---]] 
+--]]
 
 -- Parses a map file
 local function parseMap(mapFile)
@@ -98,7 +98,7 @@ local function parseMap(mapFile)
     end
   until not EOS
   assert(#map == map_height,'Error parsing map height')
-  assert(#map[1] == map_width,'Error parsing map width')  
+  assert(#map[1] == map_width,'Error parsing map width')
   return map
 end
 
@@ -106,7 +106,7 @@ end
   Scenario file description
     Header:
       version (%d+)
-      
+
     (ASCII) String data, '[\n\r]' line-endings
     Each line describes a scenario in nine fields, separated by '\t')
       bucket (int)
@@ -116,11 +116,11 @@ end
       ending x-coordinate (int)
       ending y-coordinate (int)
       optimal length (float)
---]] 
+--]]
 
 -- Parses a scenario file
 local function parseScenario(scenarioFile)
-  local scen_data = getFileContents(scenFilesPath:format(scenarioFile))  
+  local scen_data = getFileContents(scenFilesPath:format(scenarioFile))
   local _,v_offset = scen_data:find('^%w*%s*(%d+)[\n\r]')
   local _version = v_offset and scen_data:sub(1,v_offset-1) or ''
   scen_data = scen_data:sub(v_offset and v_offset+1 or 1)
@@ -132,7 +132,7 @@ local function parseScenario(scenarioFile)
       scen_data = scen_data:sub(EOS+1)
       scen[#scen+1] = parseScenLine(line)
     end
-  until not EOS  
+  until not EOS
   return scen
 end
 
