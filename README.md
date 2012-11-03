@@ -21,6 +21,24 @@ Results will be displayed in the console window, and also exported as *.log file
 
 <center><img src="http://ompldr.org/vZzRlbQ" alt="" border="0" /></center>
 
+##Command-line args
+Command-line args can be passed to [run.lua](https://github.com/Yonaba/Jumper-Benchmark/blob/master/run.lua):
+````
+run.lua -l <path> -m <mapfile>
+```
+
+* -l <path> : where <tt>path</tt> is the path to an *existing* folder where you want to export *.log* files
+* -m <mapfile> : where <tt>mapfile</tt> is a single mapfile to be processed (see [map_list](https://github.com/Yonaba/Jumper-Benchmark/blob/master/benchmarks/map_list.lua) for map files names)
+
+Examples:
+````
+run lua
+run.lua -m ht_keep.map
+run.lua -l output
+run.lua -l output -m Backwoods.map
+run.lua -m w_bonepit.map -l output
+```
+
 ##Maps
 Maps were taken from the [2012 Grid-Based Path Planning Competition](http://movingai.com/GPPC/).<br/>
 Map files format and description are given [here](http://www.movingai.com/benchmarks/formats.html).

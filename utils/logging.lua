@@ -39,7 +39,7 @@ function log:clear()
 end
 
 function log:export()
-  local stream = ('benchmarks/logs/%s.log'):format(self._handleName)
+  local stream = (self.output and (self.output..'%s.log') or ('benchmarks/logs/%s.log')):format(self._handleName)
   local f= io.open(stream,'w')
   for k,v in ipairs(self._logs) do
     f:write(v..'\n')
