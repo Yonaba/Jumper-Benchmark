@@ -21,7 +21,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 --]]
 
-local _VERSION = "1.5.2.2"
+local _VERSION = "1.6.0"
 if (...) then
   local _PATH = (...):gsub('[^%.]+$','')
   local insert = table.insert
@@ -42,7 +42,7 @@ if (...) then
   local cost = 0
   
   -- Check if a node is reachable in diagonal-search mode
-  -- Will prevent from "tuneling" issue
+  -- Will prevent from "tunneling" issue
   local step_first = false
   local function testFirstStep(grid, jx,jy,x,y)
     local is_reachable = true
@@ -324,8 +324,8 @@ end
   }
 
   -- Custom initializer (walkable, allowDiagonal,heuristic and autoFill are optional)
-  function JPS:__init(map,walkable,allowDiagonal,heuristicName,autoFill)
-    self.grid = Grid(map,walkable)
+  function JPS:__init(map,walkable,allowDiagonal,heuristicName,autoFill,postProcess)
+    self.grid = Grid(map,walkable,postProcess)
     self.allowDiagonal = allowDiagonal
     self:setHeuristic(heuristicName or 'MANHATTAN')
     self.autoFill = autoFill or false

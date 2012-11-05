@@ -28,9 +28,27 @@ if (...) then
   -- Loads dependancies
   local Class = require (_PATH .. 'third-party.30log.30log')
   local Node = require (_PATH .. 'node')
-
+  
   -- Private utilities
-  -- Creates a list of nodes, given a 2D map
+  -- Postprocessing
+  local function getBounds(map)
+    local min_bound_x, max_bound_x
+    local min_bound_y, max_bound_y
+   
+      for y in pairs(map) do
+        min_bound_y = not min_bound_y and y or (y<min_bound_y and y or min_bound_y)
+        max_bound_y = not max_bound_y and y or (y>max_bound_y and y or max_bound_y)
+        --nodes[y] = {}
+        for x in pairs(map[y]) do
+          min_bound_x = not min_bound_x and x or (x<min_bound_x and x or min_bound_x)
+          max_bound_x = not max_bound_x and x or (y>max_bound_x and y or max_bound_x)
+          --nodes[y][x] = Node(x,y)
+        end
+      end
+    return min_bound_x,max_bound_x,min_bound_y,max_bound_y
+  end
+  
+  -- Preprocessing
   local function buildGrid(map, walkable)
     local map_width, map_height = 0,0
     local nodes = {}
@@ -39,15 +57,16 @@ if (...) then
       nodes[y] = {}
         for x in pairs(map[y]) do
           map_width = map_width+1
-          nodes[y][x] = Node(x,y,(map[y][x] == walkable))
+          nodes[y][x] = Node(x,y)
         end
       end
     return nodes, map_width/map_height, map_height
   end
 
-  -- Checks if a value is within interval [lowerBound,upperBound]
-  local function within(i,lowerBound,upperBound)
-    return (i>= lowerBound and i<= upperBound)
+  -- Checks if a value is out of and interval [lowerBound,upperBound] 
+  -- Early exit approach, faster than checking "i inside [l,u]"
+  local function outOfRange(i,lowerBound,upperBound)
+    return (i< lowerBound or i > upperBound)
   end
 
   -- Set of vectors used to identify neighbours of a given location <x,y> on a 2D grid
@@ -64,27 +83,26 @@ if (...) then
     walkable = 0,
     map = {}, nodes = {},
   }
-
-  -- Custom initializer
-  function Grid:__init(map,walkable)
-    self.map = map
-    self.walkable = walkable or 0
-    self.nodes, self.width, self.height = buildGrid(self.map,self.walkable)
+  
+  local PreProcessGrid = Grid:extends()
+  local PostProcessGrid = Grid:extends()
+  
+  -- Returns a new grid
+  function Grid:new(map,walkable,postProcess)
+    if postProcess then 
+      return PostProcessGrid(map,walkable) 
+    end
+    return PreProcessGrid(map,walkable)
   end
-
-  -- Returns the node at a given position
-  function Grid:getNodeAt(x,y)
-    return self.nodes[y] and self.nodes[y][x] or nil
-  end
-
+  
   -- Checks if node [x,y] exists and is walkable
   function Grid:isWalkableAt(x,y)
-    return self.nodes[y] and self.nodes[y][x] and self.nodes[y][x].walkable
+    return self.map[y] and self.map[y][x] and (self.map[y][x]==self.walkable)
   end
-
-  -- Sets Node [x,y] as obstructed or not
+  
+    -- Sets Node [x,y] as obstructed or not
   function Grid:setWalkableAt(x,y,walkable)
-    self.nodes[y][x].walkable = walkable
+    self.map[y][x] = walkable
   end
 
   -- Returns the neighbours of a given node on a grid
@@ -110,6 +128,41 @@ if (...) then
     end
 
     return neighbours
+  end
+  
+  -- Specialization for derived classes
+  
+  -- Inits a preprocessed grid
+  function PreProcessGrid:__init(map,walkable)
+    print('PreProcessing')
+    self.map = map
+    self.walkable = walkable or 0
+    self.nodes, self.width, self.height = buildGrid(self.map,self.walkable)  
+  end
+
+  -- Inits a postprocessed grid
+  function PostProcessGrid:__init(map,walkable)
+    print('PostProcessing')
+    self.map = map
+    self.walkable = walkable or 0
+    self.nodes = {}
+    self.min_bound_x, self.max_bound_x, self.min_bound_y, self.max_bound_y = getBounds(self.map,postProcess)
+    self.width = (self.max_bound_x-self.min_bound_x)+1
+    self.height = (self.max_bound_y-self.min_bound_y)+1
+  end
+
+  -- Gets the node at location <x,y> on a preprocessed grid
+  function PreProcessGrid:getNodeAt(x,y)
+    return self.nodes[y] and self.nodes[y][x] or nil
+  end
+  
+  -- Gets the node at location <x,y> on a postprocessed grid
+  function PostProcessGrid:getNodeAt(x,y)
+    if outOfRange(x,self.min_bound_x,self.max_bound_x) then return end
+    if outOfRange(y,self.min_bound_y,self.max_bound_y) then return end
+    if not self.nodes[y] then self.nodes[y] = {} end
+    if not self.nodes[y][x] then self.nodes[y][x] = Node(x,y) end
+    return self.nodes[y][x]
   end
 
   return Grid
