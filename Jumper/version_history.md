@@ -1,5 +1,17 @@
 #Version history#
 
+## 1.6.2 (12/01/12)
+* Third-party lib 30log replaced by an hardocded class system
+* Third-party lib binary-heaps replaced by a lighter implementation
+* Changed initialization pattern : three-args are needed, only the first one is mandatory.
+* Added support for custom heuristics
+* Removed <tt>getDiagonalMoves()</tt> and <tt>setDiagonalMoves()</tt>, replaced by <tt>getMode()</tt> and <tt>setMode()</tt>
+* Internal improvements, reuse data.
+* Updated Readme
+
+## 1.6.1 (11/22/12)
+* Added Cardinal/Intercardinal heuristic
+
 ## 1.6.0 (11/05/12)
 * Added specialized grids : preprocessed/postprocessed grids
 * Nodes walkability is no longer stored as an attribute, but computed on the fly with respect to the map passed to init Jumper
