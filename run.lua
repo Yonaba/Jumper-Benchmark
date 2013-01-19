@@ -51,7 +51,7 @@ local function processMap(mapName)
 	local map = parser.parseMap(mapName)
 	local scen = parser.parseScenario(mapName)
 	local grid_m_count = collectgarbage('count')
-	local pather = Jumper(map)
+	local pather = Jumper(map,0)
 	grid_m_count = collectgarbage('count')-grid_m_count
 	return #map[1], #map, scen, pather,grid_m_count
 end
